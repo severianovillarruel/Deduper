@@ -11,7 +11,7 @@ def get_args():
 args = get_args()
 INPUT_FILE = open(args.input_file, "r")
 OUTPUT_FILE = open("dedupped.sam","w")
-LIB_UMI_LIST_FILE = open("lib_umis.txt", "r")
+LIB_UMI_LIST_FILE = open("STL96.txt", "r")
 
 #MAKE A LIST OF UMIs FROM THE LIBRARY
 LIB_UMI_LIST = []
@@ -19,7 +19,6 @@ for line in LIB_UMI_LIST_FILE:
     line = line.strip().split()
     LIB_UMI_LIST.append(line[0])
 
-print(LIB_UMI_LIST)
 #DEDUPLICATE
 DUPLICATE_REF_DICT_FORWARD = {}
 DUPLICATE_REF_DICT_REVERSE = {}
@@ -48,7 +47,7 @@ for line in INPUT_FILE:
                   DUPLICATE_REF_DICT_FORWARD[ref_key].append(umi)
                   OUTPUT_FILE.write('\t'.join(line) + "\n")
                 else:
-                  if umi in DUPLICATE_REF_DICT_FORWARD[REF_KEY]:
+                  if umi in DUPLICATE_REF_DICT_FORWARD[ref_key]:
                     continue        #don't print out
                   else:
                     OUTPUT_FILE.write('\t'.join(line) + "\n")
@@ -58,7 +57,7 @@ for line in INPUT_FILE:
                   DUPLICATE_REF_DICT_REVERSE[ref_key].append(umi)
                   OUTPUT_FILE.write('\t'.join(line) + "\n")
                 else:
-                  if umi in DUPLICATE_REF_DICT_REVERSE[REF_KEY]:
+                  if umi in DUPLICATE_REF_DICT_REVERSE[ref_key]:
                     continue        #don't print out
                   else:
                     OUTPUT_FILE.write('\t'.join(line) + "\n")
