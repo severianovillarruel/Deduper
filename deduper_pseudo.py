@@ -72,7 +72,7 @@ def function to parse the cigar string
         - sum the number in the "cigar string"
         - if there is softclipping at the beginning of the "cigar string" subtract that number from the sum
           return this as the "5' position"(e.g. 1S70M - 1180 = 109)
-        - if there is insertions anywhere in the string then subtract that insertion from the sum
+        - if there are insertions anywhere in the string then subtract that insertion from the sum
           return this as the "5' position" (e.g. 1S2I68M - 1180 = 109)
         - else return the string sum + "left_position" as the "5' position" (e.g. 70M - 1180 = 110)
 """
