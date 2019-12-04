@@ -19,7 +19,6 @@ for line in LIB_UMI_LIST_FILE:
     line = line.strip().split()
     LIB_UMI_LIST.append(line[0])
 
-
 #DEDUPLICATE
 DUPLICATE_REF_DICT_FORWARD = {}
 DUPLICATE_REF_DICT_REVERSE = {}
@@ -27,7 +26,6 @@ CHROM = 1
 for line in INPUT_FILE:
     if line[0] == "@":
         OUTPUT_FILE.write(line)
-
     else:
         line = line.strip().split()
         umi = re.findall(":[A,G,C,T,N]{8}", line[0])[0].strip(":")
@@ -63,7 +61,7 @@ for line in INPUT_FILE:
                   if umi in DUPLICATE_REF_DICT_REVERSE[ref_key]:        #PCR DUPLICATE DON"T WRITE OUT
                     continue
                   else:
-                    DUPLICATE_REF_DICT_FORWARD[ref_key].append(umi)
+                    DUPLICATE_REF_DICT_REVERSE[ref_key].append(umi)
                     OUTPUT_FILE.write('\t'.join(line) + "\n")           #NOT A PCR DUPLICATE
             if forward_mapped == None:
                continue                                                 #UNMAPPED DON'T WRITE OUT
