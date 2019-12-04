@@ -19,6 +19,7 @@ for line in LIB_UMI_LIST_FILE:
     line = line.strip().split()
     LIB_UMI_LIST.append(line[0])
 
+
 #DEDUPLICATE
 DUPLICATE_REF_DICT_FORWARD = {}
 DUPLICATE_REF_DICT_REVERSE = {}
@@ -26,11 +27,12 @@ CHROM = 1
 for line in INPUT_FILE:
     if line[0] == "@":
         OUTPUT_FILE.write(line)
+
     else:
         line = line.strip().split()
         umi = re.findall(":[A,G,C,T,N]{8}", line[0])[0].strip(":")
-        if umi not in LIB_UMI_LIST:
-            continue #don't write out
+        if umi not in LIB_UMI_LIST:                                      #UNKNOWN UMI DON'T WRITE OUT
+            continue
         else:
             flag = int(line[1])
             lposition = int(line[3])
@@ -42,27 +44,28 @@ for line in INPUT_FILE:
             CHROM = line[2]
             ref_key = (CHROM, five_prime_pos)
             if forward_mapped == True:
-                if ref_key not in DUPLICATE_REF_DICT_FORWARD:           #could modify to take the record with the highest qscore MAKE DIFFERENT DICTIONARY FOR FORWARD AND REVERSE
+                if ref_key not in DUPLICATE_REF_DICT_FORWARD:           #NOT A PCR DUPLICATE
                   DUPLICATE_REF_DICT_FORWARD[ref_key] = []
                   DUPLICATE_REF_DICT_FORWARD[ref_key].append(umi)
                   OUTPUT_FILE.write('\t'.join(line) + "\n")
                 else:
-                  if umi in DUPLICATE_REF_DICT_FORWARD[ref_key]:
-                    continue        #don't print out
+                  if umi in DUPLICATE_REF_DICT_FORWARD[ref_key]:        #PCR DUPLICATE DON"T WRITE OUT
+                    continue
                   else:
+                    DUPLICATE_REF_DICT_FORWARD[ref_key].append(umi)     #NOT A PCR DUPLICATE
                     OUTPUT_FILE.write('\t'.join(line) + "\n")
             if forward_mapped == False:
-                if ref_key not in DUPLICATE_REF_DICT_REVERSE:           #could modify to take the record with the highest qscore MAKE DIFFERENT DICTIONARY FOR FORWARD AND REVERSE
+                if ref_key not in DUPLICATE_REF_DICT_REVERSE:           #NOT A PCR DUPLICATE
                   DUPLICATE_REF_DICT_REVERSE[ref_key] = []
                   DUPLICATE_REF_DICT_REVERSE[ref_key].append(umi)
                   OUTPUT_FILE.write('\t'.join(line) + "\n")
                 else:
-                  if umi in DUPLICATE_REF_DICT_REVERSE[ref_key]:
-                    continue        #don't print out
+                  if umi in DUPLICATE_REF_DICT_REVERSE[ref_key]:        #PCR DUPLICATE DON"T WRITE OUT
+                    continue
                   else:
-                    OUTPUT_FILE.write('\t'.join(line) + "\n")
+                    DUPLICATE_REF_DICT_FORWARD[ref_key].append(umi)
+                    OUTPUT_FILE.write('\t'.join(line) + "\n")           #NOT A PCR DUPLICATE
             if forward_mapped == None:
-               continue     #don't write out
-
+               continue                                                 #UNMAPPED DON'T WRITE OUT
 INPUT_FILE.close()
 OUTPUT_FILE.close()
